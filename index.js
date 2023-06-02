@@ -3,6 +3,16 @@ const bodyParser = require('body-parser');
 const app = express();
 const port = process.env.PORT || 5000;
 const cors = require('cors');
+const morgan = require("morgan");
+
+// CONNECT TO POSTGRE
+const connectPostgre = require('./src/config/postgre.js');
+connectPostgre();
+
+// MIDDLEWARE
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));
+app.use(morgan("dev"));
 
 // DOTENV CONFIG
 const dotenv = require('dotenv');
@@ -24,9 +34,11 @@ app.use((req, res, next) => {
 });
 
 // ROUTES
+const ddlRoutes = require('./src/routes/sqlbuilders.js');
 app.get('/', (req, res) => {
     res.send('API TBD by Aufa Nasywa Rahman (21/475255/TK/52454)');
 });
+app.use('/sqlbuilders', ddlRoutes);
 
 // ERROR HANDLING
 app.use((req, res, next) => {
@@ -48,4 +60,3 @@ app.use((req, res, next) => {
 app.listen(port, () => {
     console.log(`Server is running on port ${port}.`);
   });
-  
