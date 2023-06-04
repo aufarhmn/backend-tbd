@@ -21,4 +21,5 @@ router.post('/raw', rawSQL);
 // METHOD   : POST
 // BODY     : { "tableName": "Book" }
 router.post('/table', getTableContent);
+
 module.exports = router;
