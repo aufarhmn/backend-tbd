@@ -34,11 +34,11 @@ app.use((req, res, next) => {
 });
 
 // ROUTES
-const ddlRoutes = require('./src/routes/sqlbuilders.js');
+const sqlBuildersRoute = require('./src/routes/sqlbuilders.js');
 app.get('/', (req, res) => {
     res.send('API TBD by Aufa Nasywa Rahman (21/475255/TK/52454)');
 });
-app.use('/sqlbuilders', ddlRoutes);
+app.use('/sqlbuilders', sqlBuildersRoute);
 
 // ERROR HANDLING
 app.use((req, res, next) => {
