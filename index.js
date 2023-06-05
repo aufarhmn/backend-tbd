@@ -36,13 +36,15 @@ app.use((req, res, next) => {
 // ROUTES
 const sqlBuildersRoute = require('./src/routes/sqlbuilders.js');
 const booksRoute = require('./src/routes/books.js');
+const wroteRoute = require('./src/routes/wrote.js');
 const authorRoute = require('./src/routes/author.js');
 app.get('/', (req, res) => {
     res.send('API TBD by Aufa Nasywa Rahman (21/475255/TK/52454)');
 });
 app.use('/sqlbuilders', sqlBuildersRoute);
 app.use('/books', booksRoute);
-app.use('/authors', authorRoute);
+app.use('/wrote', wroteRoute);
+app.use('/author', authorRoute);
 
 // ERROR HANDLING
 app.use((req, res, next) => {

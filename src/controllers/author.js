@@ -10,16 +10,20 @@ const db = knex({
     },
 });
 
-exports.getAuthors = async (req, res) => {
+exports.getAuthor = async (req, res) => {
     try {
-      const results = await db('Wrote')
-        .join('Author', 'Wrote.AuthorID', 'Author.AuthorID')
-        .join('Book', 'Wrote.BookID', 'Book.BookID')
-        .select('Wrote.*', 'Author.*', 'Book.*');
-  
-      res.json(results);
-    } catch (err) {
-      console.error('Error executing SQL query:', err);
-      res.status(500).json({ error: 'An error occurred' });
+        const result = await db
+            .select("*")
+            .from("Author")
+            .catch((error) => {
+                throw error;
+            });
+
+        res.status(200).json(result);
+    } catch (error) {
+        console.error("Error retrieving table content:", error);
+        res.status(500).json({
+            error: "An error occurred while retrieving table content.",
+        });
     }
 };

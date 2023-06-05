@@ -1,11 +1,11 @@
 const express = require("express");
 const router = express.Router();
-const { getAuthor } = require("../controllers/author.js");
+const { getWrote } = require("../controllers/wrote.js");
 
 // DESC     : GET ALL AUTHORS
 // PATH     : /authors
 // METHOD   : GET
 // BODY     : -
-router.get("/", getAuthor);
+router.get("/", getWrote);
 
 module.exports = router;
