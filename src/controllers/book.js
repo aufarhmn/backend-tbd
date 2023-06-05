@@ -67,3 +67,26 @@ exports.deleteBook = async (req, res) => {
     res.status(500).json({ error: 'An error occurred' });
   }
 };
+
+exports.insertBooks = async (req, res) => {
+  const { BookID, BookTitle, Description, PublicationYear, Pages, PublisherID, LanguageID } = req.body;
+
+  try {
+    const newBook = await db('Book')
+      .returning('*')
+      .insert({
+        BookID,
+        BookTitle,
+        Description,
+        PublicationYear,
+        Pages,
+        PublisherID,
+        LanguageID,
+      });
+
+    res.status(200).json(newBook);
+  } catch (err) {
+    console.error('Error executing SQL query:', err);
+    res.status(500).json({ error: 'An error occurred' });
+  }
+};

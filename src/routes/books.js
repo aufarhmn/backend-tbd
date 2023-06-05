@@ -2,7 +2,8 @@ const express = require("express");
 const router = express.Router();
 const { getBooks,
         editBook,
-        deleteBook } = require("../controllers/book.js");
+        deleteBook,
+        insertBooks } = require("../controllers/book.js");
 
 // DESC     : GET ALL BOOKS
 // PATH     : /books
@@ -24,5 +25,12 @@ router.put("/:id", editBook);
 // BODY     : -
 // PARAMS   : id
 router.delete("/:id", deleteBook);
+
+// DESC     : INSERT BOOKS
+// PATH     : /books
+// METHOD   : POST
+// BODY     : title, description, publicationYear, pages
+// PARAMS   : -
+router.post("/", insertBooks);
 
 module.exports = router;
