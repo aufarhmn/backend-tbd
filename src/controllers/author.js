@@ -100,3 +100,42 @@ exports.addAuthor = async (req, res) => {
         res.status(500).json({ error: "An error occurred" });
     }
 }
+
+exports.editMultipleAuthors = async (req, res) => {
+    const { authors } = req.body;
+  
+    try {
+      await db.transaction(async (trx) => {
+        let success = true;
+  
+        for (const author of authors) {
+          const { id, FirstName, LastName, YearBorn, YearDied } = author;
+  
+          const updatedCount = await trx("Author")
+            .where({ AuthorID: id })
+            .update({
+              FirstName,
+              LastName,
+              YearBorn,
+              YearDied,
+            });
+  
+          if (updatedCount === 0) {
+            success = false;
+            break;
+          }
+        }
+  
+        if (success) {
+          await trx.commit();
+          res.json({ message: "Authors updated successfully" });
+        } else {
+          await trx.rollback();
+          res.status(404).json({ error: "One or more authors not found" });
+        }
+      });
+    } catch (err) {
+      console.error("Error executing SQL query:", err);
+      res.status(500).json({ error: "An error occurred" });
+    }
+};  

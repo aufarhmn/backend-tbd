@@ -42,9 +42,9 @@ app.get('/', (req, res) => {
     res.send('API TBD by Aufa Nasywa Rahman (21/475255/TK/52454)');
 });
 app.use('/sqlbuilders', sqlBuildersRoute);
-app.use('/books', booksRoute);
-app.use('/wrote', wroteRoute);
-app.use('/author', authorRoute);
+app.use('/Book', booksRoute);
+app.use('/Wrote', wroteRoute);
+app.use('/Author', authorRoute);
 
 // ERROR HANDLING
 app.use((req, res, next) => {

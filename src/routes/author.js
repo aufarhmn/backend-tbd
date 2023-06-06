@@ -3,7 +3,8 @@ const router = express.Router();
 const { getAuthor,
         editAuthor,
         deleteAuthor,
-        addAuthor } = require("../controllers/author.js");
+        addAuthor,
+        editMultipleAuthors } = require("../controllers/author.js");
 
 // DESC     : GET ALL AUTHORS
 // PATH     : /authors
@@ -31,5 +32,12 @@ router.delete("/:id", deleteAuthor);
 // BODY     : FirstName, LastName, YearBorn, YearDied
 // PARAMS   : -
 router.post("/", addAuthor);
+
+// DESC     : EDIT MULTIPLE AUTHORS
+// PATH     : /authors
+// METHOD   : PUT
+// BODY     : FirstName, LastName, YearBorn, YearDied
+// PARAMS   : -
+router.post("/edit-multiple", editMultipleAuthors);
 
 module.exports = router;
