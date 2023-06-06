@@ -1,3 +1,4 @@
+const e = require("express");
 const knex = require("knex");
 
 const db = knex({
@@ -10,16 +11,12 @@ const db = knex({
     },
 });
 
-exports.getStaff = async (req, res) => {
+exports.getCity = async (req, res) => {
     try {
         const result = await db
-            .select("*")
-            .from("Staff")
-            .join("Address", "Staff.AddressID", "Address.AddressID")
-            .join("Store", "Staff.StoreID", "Store.StoreID")
-            .catch((error) => {
-                throw error;
-            });
+            .select('City.*', 'Country.*')
+            .from('City')
+            .join('Country', 'City.CountryID', 'Country.CountryID');
 
         res.status(200).json(result);
     } catch (error) {
@@ -30,26 +27,25 @@ exports.getStaff = async (req, res) => {
     }
 }
 
-exports.editStaff = async (req, res) => {
+exports.editCity = async (req, res) => {
     const { id } = req.params;
-    const {  StoreID, AddressID, FirstName, LastName } = req.body;
+    const { CityName, CountryID } = req.body;
 
     try {
-        const updatedCount = await db("Staff")
+        const updatedCount = await db("City")
             .where({
-                StaffID: id,
+                CityID: id,
             })
             .update({
-                StoreID: StoreID,
-                AddressID: AddressID,
-                FirstName: FirstName,
-                LastName: LastName,
+                CityID: id,
+                CityName: CityName,
+                CountryID: CountryID,
             });
 
         if (updatedCount > 0) {
-            res.json({ message: "Staff updated successfully" });
+            res.json({ message: "City updated successfully" });
         } else {
-            res.status(404).json({ error: "Staff not found" });
+            res.status(404).json({ error: "City not found" });
         }
     }
     catch (err) {
@@ -58,17 +54,21 @@ exports.editStaff = async (req, res) => {
     }
 }
 
-exports.deleteStaff = async (req, res) => {
+exports.deleteCity = async (req, res) => {
     const { id } = req.params;
 
     try {
-        const deletedCount = await db("Staff")
+        const deletedCount = await db("City")
             .where({
-                StaffID: id,
+                CityID: id,
             })
             .del();
-        
-        res.status(200).json(deletedCount);
+
+        if (deletedCount > 0) {
+            res.json({ message: "City deleted successfully" });
+        } else {
+            res.status(404).json({ error: "City not found" });
+        }
     }
     catch (err) {
         console.error("Error executing SQL query:", err);
@@ -76,20 +76,22 @@ exports.deleteStaff = async (req, res) => {
     }
 }
 
-exports.addStaff = async (req, res) => {
-    const { StaffID, StoreID, AddressID, FirstName, LastName } = req.body;
+exports.addCity = async (req, res) => {
+    const { CityID, CityName, CountryID } = req.body;
 
     try {
-        const insertedCount = await db("Staff")
+        const newCity = await db("City")
             .insert({
-                StaffID: StaffID,
-                StoreID: StoreID,
-                AddressID: AddressID,
-                FirstName: FirstName,
-                LastName: LastName,
+                CityID: CityID,
+                CityName: CityName,
+                CountryID: CountryID,
             });
 
-        res.status(200).json(insertedCount);
+        if (newCity) {
+            res.json({ message: "City added successfully" });
+        } else {
+            res.status(404).json({ error: "City not found" });
+        }
     }
     catch (err) {
         console.error("Error executing SQL query:", err);

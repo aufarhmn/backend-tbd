@@ -10,13 +10,11 @@ const db = knex({
     },
 });
 
-exports.getStaff = async (req, res) => {
+exports.getLanguage = async (req, res) => {
     try {
         const result = await db
             .select("*")
-            .from("Staff")
-            .join("Address", "Staff.AddressID", "Address.AddressID")
-            .join("Store", "Staff.StoreID", "Store.StoreID")
+            .from("Language")
             .catch((error) => {
                 throw error;
             });
@@ -30,26 +28,24 @@ exports.getStaff = async (req, res) => {
     }
 }
 
-exports.editStaff = async (req, res) => {
+exports.editLanguage = async (req, res) => {
     const { id } = req.params;
-    const {  StoreID, AddressID, FirstName, LastName } = req.body;
+    const { LanguageName } = req.body;
 
     try {
-        const updatedCount = await db("Staff")
+        const updatedCount = await db("Language")
             .where({
-                StaffID: id,
+                LanguageID: id,
             })
             .update({
-                StoreID: StoreID,
-                AddressID: AddressID,
-                FirstName: FirstName,
-                LastName: LastName,
+                LanguageID: id,
+                LanguageName: LanguageName,
             });
 
         if (updatedCount > 0) {
-            res.json({ message: "Staff updated successfully" });
+            res.json({ message: "Language updated successfully" });
         } else {
-            res.status(404).json({ error: "Staff not found" });
+            res.status(404).json({ error: "Language not found" });
         }
     }
     catch (err) {
@@ -58,17 +54,21 @@ exports.editStaff = async (req, res) => {
     }
 }
 
-exports.deleteStaff = async (req, res) => {
+exports.deleteLanguage = async (req, res) => {
     const { id } = req.params;
 
     try {
-        const deletedCount = await db("Staff")
+        const deletedCount = await db("Language")
             .where({
-                StaffID: id,
+                LanguageID: id,
             })
             .del();
-        
-        res.status(200).json(deletedCount);
+
+        if (deletedCount > 0) {
+            res.json({ message: "Language deleted successfully" });
+        } else {
+            res.status(404).json({ error: "Language not found" });
+        }
     }
     catch (err) {
         console.error("Error executing SQL query:", err);
@@ -76,17 +76,14 @@ exports.deleteStaff = async (req, res) => {
     }
 }
 
-exports.addStaff = async (req, res) => {
-    const { StaffID, StoreID, AddressID, FirstName, LastName } = req.body;
+exports.addLanguage = async (req, res) => {
+    const { LanguageID, LanguageName } = req.body;
 
     try {
-        const insertedCount = await db("Staff")
+        const insertedCount = await db("Language")
             .insert({
-                StaffID: StaffID,
-                StoreID: StoreID,
-                AddressID: AddressID,
-                FirstName: FirstName,
-                LastName: LastName,
+                LanguageID: LanguageID,
+                LanguageName: LanguageName,
             });
 
         res.status(200).json(insertedCount);

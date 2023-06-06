@@ -10,13 +10,13 @@ const db = knex({
     },
 });
 
-exports.getStaff = async (req, res) => {
+exports.getInventory = async (req, res) => {
     try {
         const result = await db
             .select("*")
-            .from("Staff")
-            .join("Address", "Staff.AddressID", "Address.AddressID")
-            .join("Store", "Staff.StoreID", "Store.StoreID")
+            .from("Inventory")
+            .join("Book", "Inventory.BookID", "Book.BookID")
+            .join("Store", "Inventory.StoreID", "Store.StoreID")
             .catch((error) => {
                 throw error;
             });
@@ -30,26 +30,25 @@ exports.getStaff = async (req, res) => {
     }
 }
 
-exports.editStaff = async (req, res) => {
+exports.editInventory = async (req, res) => {
     const { id } = req.params;
-    const {  StoreID, AddressID, FirstName, LastName } = req.body;
+    const { BookID, StoreID, Quantity } = req.body;
 
     try {
-        const updatedCount = await db("Staff")
+        const updatedCount = await db("Inventory")
             .where({
-                StaffID: id,
+                InventoryID: id,
             })
             .update({
+                BookID: BookID,
                 StoreID: StoreID,
-                AddressID: AddressID,
-                FirstName: FirstName,
-                LastName: LastName,
+                Quantity: Quantity,
             });
 
         if (updatedCount > 0) {
-            res.json({ message: "Staff updated successfully" });
+            res.json({ message: "Inventory updated successfully" });
         } else {
-            res.status(404).json({ error: "Staff not found" });
+            res.status(404).json({ error: "Inventory not found" });
         }
     }
     catch (err) {
@@ -58,17 +57,21 @@ exports.editStaff = async (req, res) => {
     }
 }
 
-exports.deleteStaff = async (req, res) => {
+exports.deleteInventory = async (req, res) => {
     const { id } = req.params;
 
     try {
-        const deletedCount = await db("Staff")
+        const deletedCount = await db("Inventory")
             .where({
-                StaffID: id,
+                InventoryID: id,
             })
             .del();
-        
-        res.status(200).json(deletedCount);
+
+        if (deletedCount > 0) {
+            res.json({ message: "Inventory deleted successfully" });
+        } else {
+            res.status(404).json({ error: "Inventory not found" });
+        }
     }
     catch (err) {
         console.error("Error executing SQL query:", err);
@@ -76,17 +79,16 @@ exports.deleteStaff = async (req, res) => {
     }
 }
 
-exports.addStaff = async (req, res) => {
-    const { StaffID, StoreID, AddressID, FirstName, LastName } = req.body;
+exports.addInventory = async (req, res) => {
+    const { InventoryID, BookID, StoreID, Quantity } = req.body;
 
     try {
-        const insertedCount = await db("Staff")
+        const insertedCount = await db("Inventory")
             .insert({
-                StaffID: StaffID,
+                InventoryID: InventoryID,
+                BookID: BookID,
                 StoreID: StoreID,
-                AddressID: AddressID,
-                FirstName: FirstName,
-                LastName: LastName,
+                Quantity: Quantity,
             });
 
         res.status(200).json(insertedCount);

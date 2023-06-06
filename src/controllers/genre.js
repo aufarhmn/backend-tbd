@@ -10,13 +10,11 @@ const db = knex({
     },
 });
 
-exports.getStaff = async (req, res) => {
+exports.getGenre = async (req, res) => {
     try {
         const result = await db
             .select("*")
-            .from("Staff")
-            .join("Address", "Staff.AddressID", "Address.AddressID")
-            .join("Store", "Staff.StoreID", "Store.StoreID")
+            .from("Genre")
             .catch((error) => {
                 throw error;
             });
@@ -30,26 +28,24 @@ exports.getStaff = async (req, res) => {
     }
 }
 
-exports.editStaff = async (req, res) => {
+exports.editGenre = async (req, res) => {
     const { id } = req.params;
-    const {  StoreID, AddressID, FirstName, LastName } = req.body;
+    const { GenreName } = req.body;
 
     try {
-        const updatedCount = await db("Staff")
+        const updatedCount = await db("Genre")
             .where({
-                StaffID: id,
+                GenreID: id,
             })
             .update({
-                StoreID: StoreID,
-                AddressID: AddressID,
-                FirstName: FirstName,
-                LastName: LastName,
+                GenreID: id,
+                GenreName: GenreName,
             });
 
         if (updatedCount > 0) {
-            res.json({ message: "Staff updated successfully" });
+            res.json({ message: "Genre updated successfully" });
         } else {
-            res.status(404).json({ error: "Staff not found" });
+            res.status(404).json({ error: "Genre not found" });
         }
     }
     catch (err) {
@@ -58,17 +54,21 @@ exports.editStaff = async (req, res) => {
     }
 }
 
-exports.deleteStaff = async (req, res) => {
+exports.deleteGenre = async (req, res) => {
     const { id } = req.params;
 
     try {
-        const deletedCount = await db("Staff")
+        const deletedCount = await db("Genre")
             .where({
-                StaffID: id,
+                GenreID: id,
             })
             .del();
-        
-        res.status(200).json(deletedCount);
+
+        if (deletedCount > 0) {
+            res.json({ message: "Genre deleted successfully" });
+        } else {
+            res.status(404).json({ error: "Genre not found" });
+        }
     }
     catch (err) {
         console.error("Error executing SQL query:", err);
@@ -76,20 +76,18 @@ exports.deleteStaff = async (req, res) => {
     }
 }
 
-exports.addStaff = async (req, res) => {
-    const { StaffID, StoreID, AddressID, FirstName, LastName } = req.body;
+exports.addGenre = async (req, res) => {
+    const { GenreID, GenreName } = req.body;
 
     try {
-        const insertedCount = await db("Staff")
+        const result = await db("Genre")
             .insert({
-                StaffID: StaffID,
-                StoreID: StoreID,
-                AddressID: AddressID,
-                FirstName: FirstName,
-                LastName: LastName,
-            });
+                GenreID: GenreID,
+                GenreName: GenreName,
+            })
+            .returning("GenreID");
 
-        res.status(200).json(insertedCount);
+        res.status(200).json(result);
     }
     catch (err) {
         console.error("Error executing SQL query:", err);
