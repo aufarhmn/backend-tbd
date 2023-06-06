@@ -90,3 +90,42 @@ exports.insertBooks = async (req, res) => {
     res.status(500).json({ error: 'An error occurred' });
   }
 };
+
+exports.editMultiple = async (req, res) => {
+  const { books } = req.body;
+
+  try {
+    await db.transaction(async (trx) => {
+      let success = true;
+
+      for (const book of books) {
+        const { id, BookTitle, Description, PublicationYear, Pages } = book;
+
+        const updatedCount = await trx("Book")
+          .where({ BookID: id })
+          .update({
+            BookTitle,
+            Description,
+            PublicationYear,
+            Pages,
+          });
+
+        if (updatedCount === 0) {
+          success = false;
+          break;
+        }
+      }
+
+      if (success) {
+        await trx.commit();
+        res.json({ message: "Book updated successfully" });
+      } else {
+        await trx.rollback();
+        res.status(404).json({ error: "One or more books not found" });
+      }
+    });
+  } catch (err) {
+    console.error("Error executing SQL query:", err);
+    res.status(500).json({ error: "An error occurred" });
+  }
+};  

@@ -3,7 +3,8 @@ const router = express.Router();
 const { getBooks,
         editBook,
         deleteBook,
-        insertBooks } = require("../controllers/book.js");
+        insertBooks,
+        editMultiple } = require("../controllers/book.js");
 
 // DESC     : GET ALL BOOKS
 // PATH     : /books
@@ -32,5 +33,12 @@ router.delete("/:id", deleteBook);
 // BODY     : title, description, publicationYear, pages
 // PARAMS   : -
 router.post("/", insertBooks);
+
+// DESC     : EDIT MULTIPLE BOOKS
+// PATH     : /books/edit-multiple
+// METHOD   : POST
+// BODY     : books
+// PARAMS   : -
+router.post("/edit-multiple", editMultiple);
 
 module.exports = router;
