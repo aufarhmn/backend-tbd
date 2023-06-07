@@ -14,10 +14,6 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(morgan("dev"));
 
-// DOTENV CONFIG
-const dotenv = require('dotenv');
-dotenv.config({ path: "./config.env" });
-
 // CORS
 app.use(cors({ origin: "*" }));
 app.use((req, res, next) => {
