@@ -10,7 +10,6 @@ const db = knex({
     },
 });
 
-// RAW SQL COMMANDS HANDLER
 exports.rawSQL = async (req, res) => {
     try {
         const { sql } = req.body;
@@ -18,6 +17,11 @@ exports.rawSQL = async (req, res) => {
         if (!sql) {
             return res.status(400).json({ error: "Missing SQL query." });
         }
+        
+        if (containsDropCommand(sql)) {
+            return res.status(400).json({ error: "gabole bang nnt gwe {isi sendiri}" });
+        }
+        
         const result = await db.raw(sql).catch((error) => {
             throw error;
         });
@@ -31,7 +35,11 @@ exports.rawSQL = async (req, res) => {
     }
 };
 
-// GET ALL TABLE NAMES
+const containsDropCommand = (sql) => {
+    const normalizedSQL = sql.toLowerCase();
+    return normalizedSQL.includes("drop");
+};
+
 exports.getAllTable = async (req, res) => {
     try {
         const result = await db

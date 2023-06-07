@@ -99,7 +99,6 @@ exports.addPurchase = async (req, res) => {
                 Amount: Amount,
                 PurchaseDate: PurchaseDate,
             })
-            .returning("*");
 
         res.status(200).json(result);
     }
